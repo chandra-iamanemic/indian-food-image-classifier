@@ -1,43 +1,37 @@
 #%%
 import tensorflow as tf
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
-
-import cv2
+from datetime import datetime
 
 from datetime import datetime
-import matplotlib.pyplot as plt
-import matplotlib.image as img
 import os
-import pandas as pd
-import numpy as np
-from pathlib import Path
 import shutil
 import warnings
 warnings.filterwarnings("ignore")
 
 #%%
 gpus = tf.config.experimental.list_physical_devices('GPU')
-print("Num GPUs Available: ", len(gpus))
 
 for gpu in gpus:
     tf.config.experimental.set_memory_growth(gpu, True)
 
 
-tf.test.is_gpu_available()
-
-
 #%%
 # From the raw path we can make a list of all the categories or classes by listing the folder names
-root_dir = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
+# root_dir = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
+root_dir = "/app"
+print("Root Dir : ", root_dir)
 images_dir = os.path.join(root_dir,'images')
+print("Images Dir : ", images_dir)
 
-category_list = os.listdir(os.path.join(images_dir, 'train'))
 
 # %%
 #Setting dataset path for train and test sets 
 train_path = f"{images_dir}/train"
 validation_path = f"{images_dir}/validation"
 test_path = f"{images_dir}/test"
+
+category_list = os.listdir(train_path)
 
 #%%
 
@@ -121,7 +115,14 @@ model.compile(loss='categorical_crossentropy',
 
 
 # %%
-checkpoint = ModelCheckpoint(filepath=os.path.join(root_dir, 'exports', 'mobilenetv2.h5'), 
+# Generate a unique timestamp
+timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+
+# Define the filename with the timestamp
+model_filename = f'mobilenetv2_{timestamp}.h5'
+
+#%%
+checkpoint = ModelCheckpoint(filepath=os.path.join(root_dir, 'exports', model_filename), 
                                verbose=2, 
                                save_best_only=True)
 callbacks = [checkpoint]
@@ -129,7 +130,7 @@ start = datetime.now()
 
 history = model.fit(train_set,
                       validation_data=validation_set,
-                      epochs=20,
+                      epochs=25,
                       validation_steps=len(validation_set),
                       callbacks=callbacks, 
                       verbose=2)
@@ -164,14 +165,14 @@ model.compile(loss='categorical_crossentropy',
 
 #%%
 
-checkpoint = ModelCheckpoint(filepath=os.path.join(root_dir, 'exports', 'mobilenetv2.h5'), 
+checkpoint = ModelCheckpoint(filepath=os.path.join(root_dir, 'exports', model_filename), 
                                verbose=2, save_best_only=True)
 callbacks = [checkpoint]
 start = datetime.now()
 
 history_finetuned = model.fit(train_set,
                       validation_data=validation_set,
-                      epochs=50,
+                      epochs=25,
                       validation_steps=len(validation_set),
                       callbacks=callbacks, 
                       verbose=2)

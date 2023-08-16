@@ -1,6 +1,16 @@
 # indian-food-image-classifier
 Classifier to identify Indian food based on input image
 
+# Docker Setup
+
+
+docker build -t ml-training-image .
+
+docker run -v "$(pwd)/exports:/app/exports" ml-training-image
+
+docker run --cpus=0.0 --memory=0 -v "$(pwd)/exports:/app/exports" ml-training-image
+
+
  ## Video snippets of the project
  You can look at some visuals on these links :
  
