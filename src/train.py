@@ -130,7 +130,7 @@ start = datetime.now()
 
 history = model.fit(train_set,
                       validation_data=validation_set,
-                      epochs=25,
+                      epochs=1,
                       validation_steps=len(validation_set),
                       callbacks=callbacks, 
                       verbose=2)
@@ -172,7 +172,7 @@ start = datetime.now()
 
 history_finetuned = model.fit(train_set,
                       validation_data=validation_set,
-                      epochs=25,
+                      epochs=1,
                       validation_steps=len(validation_set),
                       callbacks=callbacks, 
                       verbose=2)
